@@ -4,11 +4,7 @@ const listRouter = require('./lists');
 
 // every route is preprended by /users
 
-router.post('/login', userController.login);
-
 router.get('/:username', userController.get);
-
-router.post('/', userController.create);
 
 // use nested router for lists
 router.use('/:username/lists', (req, res, next) => {
