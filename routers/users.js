@@ -2,6 +2,8 @@ const router = require('express').Router();
 const userController = require('../controllers/userController');
 const listRouter = require('./lists');
 
+// every route is preprended by /users
+
 router.post('/login', userController.login);
 
 router.get('/:username', userController.get);
