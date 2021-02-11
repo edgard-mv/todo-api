@@ -15,11 +15,12 @@ app.use(express.json());
 const userRouter = require('./routers/users');
 app.use('/users', userRouter);
 
-const listRouter = require('./routers/lists');
-app.use('/lists', listRouter);
-
 // DB config
-mongoose.connect(DB_STRING, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(DB_STRING, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true
+});
 const conn = mongoose.connection;
 
 // log connection established
