@@ -27,7 +27,9 @@ app.use(expressJWT({
 }).unless({
     path: [
         '/auth/signup',
-        '/auth/login'
+        '/auth/login',
+        '/auth/token',
+        '/auth/logout'
     ]
 }));
 

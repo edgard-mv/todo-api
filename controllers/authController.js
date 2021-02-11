@@ -2,8 +2,15 @@ const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
+// todo: implement refresh tokens in db
+// this needs to be implemented in db, rather than memory. It will be done later.
+// because of this, refresh tokens will only be valid as long as the server is running.
+let refreshTokens = [];
+
 // todo: validate env var
 const TOKEN_SECRET = process.env.TOKEN_SECRET;
+const EXP_TIME = process.env.EXP_TIME;
+const REFRESH_SECRET = process.env.REFRESH_SECRET;
 const SALT_ROUNDS = parseInt(process.env.SALT_ROUNDS) || 10;
 
 exports.login = async(req, res) => {
@@ -21,20 +28,20 @@ exports.login = async(req, res) => {
         // password comparison
         if (await bcrypt.compare(password, user.password)) {
             const userValues = {
-                _id: user._id,
-                email: user.email,
+                sub: user._id,
                 username: user.username,
                 name: user.name,
                 lists: user.lists
             }
             console.log(user);
             try {
-                const accessToken = jwt.sign(userValues, Buffer.from(TOKEN_SECRET, 'base64'));
-                return res.json(accessToken);
+                const accessToken = jwt.sign(userValues, Buffer.from(TOKEN_SECRET, 'base64'), { expiresIn: EXP_TIME });
+                const refreshToken = jwt.sign(userValues, Buffer.from(REFRESH_SECRET, 'base64'));
+                refreshTokens.push(refreshToken);
 
+                return res.json({ accessToken, refreshToken });
             } catch(err) {
-                console.log('im here' + err);
-
+                return res.status(500).json({ 'msg': err });
             }
             
         } else {
@@ -75,10 +82,34 @@ exports.signup = async(req, res) => {
     
     try {
         const u = await user.save();
-        res.status(201).json(u);
+        return res.status(201).json({ 'username': u.username });
     } catch (err) {
         res.json({ 'msg': `Error: ${err}` });
     }
+};
+
+
+exports.getToken = async(req, res) => {
+    const refreshToken = req.body.refreshToken;
+
+    if (!refreshToken) return res.status(401).json({ 'msg': 'Error. Token must be provided.' });
+    if (!refreshTokens.includes(refreshToken)) return res.status(403).json({ 'msg': 'Error. Invalid token.' });
+    jwt.verify(refreshToken, Buffer.from(REFRESH_SECRET, 'base64'), (err, user) => {
+        if (err) return res.status(403).json({ 'msg': 'Error. Invalid token.' });
+        const userValues = {
+            sub: user._id,
+            username: user.username,
+            name: user.name,
+            lists: user.lists
+        }
+        const accessToken = jwt.sign(userValues, Buffer.from(TOKEN_SECRET, 'base64'), { expiresIn: EXP_TIME });
+        return res.json({ accessToken });
+    });
+};
+
+exports.logout = async(req, res) => {
+    refreshTokens = refreshTokens.filter(token => token !== req.body.refreshToken);
+    return res.sendStatus(204);
 };
 
 module.exports = exports;
