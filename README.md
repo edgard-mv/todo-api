@@ -24,7 +24,7 @@
 
 # REST API
 
-The REST API to the example app is described below.
+The REST API to the SmartLists app is described below.
 
 ## Create a new user
 
@@ -71,9 +71,28 @@ This will return json with accessToken and refreshToken.
 
 `GET /users/:username/lists`
 
-Your must to provide the accessToken in the Authorization header of the request.
+Your must provide the accessToken in the Authorization header of the request.
 
 ### Response
 This will return json containing all of the lists associated with the user.
+
+## Add task to list per user
+
+### Request
+
+`POST /users/:username/lists/:listId/tasks`
+
+Your must provide the accessToken in the Authorization header of the request.
+
+### Body
+```
+{
+    "name": "Cortar el césped",
+    "priority": 2
+}
+```
+
+### Response
+This will return json containing the list associated with the given user.
 
 ## TODO: describe other routes...
