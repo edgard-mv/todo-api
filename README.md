@@ -71,7 +71,7 @@ This will return json with accessToken and refreshToken.
 
 `GET /users/:username/lists`
 
-Your must provide the accessToken in the Authorization header of the request.
+You must provide the accessToken in the Authorization header of the request.
 
 ### Response
 This will return json containing all of the lists associated with the user.
@@ -82,7 +82,7 @@ This will return json containing all of the lists associated with the user.
 
 `POST /users/:username/lists/:listId/tasks`
 
-Your must provide the accessToken in the Authorization header of the request.
+You must provide the accessToken in the Authorization header of the request.
 
 ### Body
 ```
