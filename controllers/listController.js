@@ -43,4 +43,25 @@ exports.create = async(req, res) => {
     }
 };
 
+exports.removeByUsername = async(req, res) => {
+    const username = req.username;
+    const listId = req.params.listId;
+
+    
+    try {
+        const user = await User.findOne({ username }).exec();
+
+        if (!user) return res.status(400).json({ 'msg': `Error. No user with username: ${username}` });
+        
+        if (!user.lists.includes(listId)) return res.status(400).json({
+            'msg': `Error. No list with id ${listId} for user ${username}`
+        });
+        
+        await List.findByIdAndDelete(listId).exec();
+        res.sendStatus(204);
+    } catch (err) {
+        res.json({ 'msg': `Error: ${err}` });
+    }
+};
+
 module.exports = exports;

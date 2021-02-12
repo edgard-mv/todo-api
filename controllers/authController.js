@@ -33,7 +33,6 @@ exports.login = async(req, res) => {
                 name: user.name,
                 lists: user.lists
             }
-            console.log(user);
             try {
                 const accessToken = jwt.sign(userValues, Buffer.from(TOKEN_SECRET, 'base64'), { expiresIn: EXP_TIME });
                 const refreshToken = jwt.sign(userValues, Buffer.from(REFRESH_SECRET, 'base64'));

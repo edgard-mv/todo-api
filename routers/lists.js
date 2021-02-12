@@ -5,8 +5,9 @@ const taskRouter = require('./tasks');
 // every route is preprended by /users/:username/lists
 
 router.get('/', listController.getByUsername);
-
 router.post('/', listController.create);
+router.delete('/:listId', listController.removeByUsername);
+
 
 router.use('/:listId/tasks', (req, res, next) => {
     req.listId = req.params.listId;
