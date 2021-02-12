@@ -1,6 +1,6 @@
-# REST API for list management
+# REST API for list management app — SmartList
 
-## First things first, create `.env` file with following variable
+## First things first, create `.env` file with following variables
     PORT=4000
 ### Your database string connection, this is just an example
     DB_STRING=mongodb://localhost:27017/todo_api
