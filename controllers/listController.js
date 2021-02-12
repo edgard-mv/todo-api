@@ -52,12 +52,14 @@ exports.removeByUsername = async(req, res) => {
         const user = await User.findOne({ username }).exec();
 
         if (!user) return res.status(400).json({ 'msg': `Error. No user with username: ${username}` });
-        
+
         if (!user.lists.includes(listId)) return res.status(400).json({
             'msg': `Error. No list with id ${listId} for user ${username}`
         });
         
         await List.findByIdAndDelete(listId).exec();
+        user.lists = user.lists.filter(list => list._id.toString() !== listId);
+        await user.save();
         res.sendStatus(204);
     } catch (err) {
         res.json({ 'msg': `Error: ${err}` });
