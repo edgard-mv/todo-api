@@ -9,7 +9,7 @@ let refreshTokens = [];
 
 // todo: validate env var
 const TOKEN_SECRET = process.env.TOKEN_SECRET;
-const EXP_TIME = process.env.EXP_TIME;
+const EXP_TIME = process.env.EXP_TIME || '5m';
 const REFRESH_SECRET = process.env.REFRESH_SECRET;
 const SALT_ROUNDS = parseInt(process.env.SALT_ROUNDS) || 10;
 
